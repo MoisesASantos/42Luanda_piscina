@@ -1,0 +1,111 @@
+Vamos analisar detalhadamente o código da função `ft_strcapitalize`, focando especialmente na variável `inicial` e seu papel no funcionamento da função.
+
+### Código da Função
+
+```c
+#include <unistd.h>
+#include <ctype.h>
+
+char *ft_strcapitalize(char *str)
+{
+    int i = 0;
+    int inicial = 1; // 1 significa que estamos no início de uma palavra
+
+    while (str[i] != '\0')
+    {
+        if (isalpha(str[i])) // Verifica se é uma letra
+        {
+            if (inicial)
+                str[i] = toupper(str[i]); // Capitaliza a letra
+            else
+                str[i] = tolower(str[i]); // Torna minúscula
+            inicial = 0; // Depois de uma letra, não estamos mais no início
+        }
+        else if (isdigit(str[i]))
+        {
+            inicial = 0; // Números não mudam o estado
+        }
+        else
+        {
+            inicial = 1; // Qualquer outro caractere inicia uma nova palavra
+        }
+        i++;
+    }
+    return str;
+}
+```
+
+### Explicação Detalhada
+
+1. **Inclusão de Bibliotecas**:
+   - `#include <ctype.h>`: Esta biblioteca é utilizada para funções de manipulação de caracteres, como verificar se um caractere é uma letra (`isalpha`) ou converter para maiúscula/minúscula (`toupper`, `tolower`).
+
+2. **Declaração da Função**:
+   - `char *ft_strcapitalize(char *str)`: A função recebe uma string (`str`) e retorna a mesma string após a capitalização das palavras.
+
+3. **Inicialização das Variáveis**:
+   - `int i = 0;`: `i` é um índice que percorre a string.
+   - `int inicial = 1;`: Essa variável é um flag que indica se estamos no início de uma nova palavra. 
+     - O valor `1` significa "sim, estamos no início".
+     - O valor `0` significa "não, já passamos para o meio ou fim de uma palavra".
+
+4. **Loop Principal**:
+   ```c
+   while (str[i] != '\0')
+   ```
+   - Este loop percorre a string até encontrar o caractere nulo (`'\0'`), que indica o final da string.
+
+5. **Verificação se o Caractere é uma Letra**:
+   ```c
+   if (isalpha(str[i]))
+   ```
+   - Se o caractere atual é uma letra (A-Z ou a-z), a função realiza a seguinte lógica:
+     - **Capitalização**:
+       ```c
+       if (inicial)
+           str[i] = toupper(str[i]);
+       ```
+       - Se `inicial` é `1`, a letra é convertida para maiúscula.
+     - **Minúsculas**:
+       ```c
+       else
+           str[i] = tolower(str[i]);
+       ```
+       - Se `inicial` é `0`, a letra é convertida para minúscula.
+     - Após processar a letra, `inicial` é definido como `0`, indicando que já processamos uma letra e não estamos mais no início de uma palavra.
+
+6. **Verificação se o Caractere é um Número**:
+   ```c
+   else if (isdigit(str[i]))
+   ```
+   - Se o caractere atual é um dígito (0-9), `inicial` continua como `0`, pois números não iniciam uma nova palavra.
+
+7. **Qualquer Outro Caractere**:
+   ```c
+   else
+   {
+       inicial = 1; // Qualquer outro caractere inicia uma nova palavra
+   }
+   ```
+   - Se o caractere não é letra nem número (por exemplo, espaço, pontuação), `inicial` é redefinido para `1`. Isso indica que a próxima letra que encontrar será o início de uma nova palavra.
+
+8. **Incremento do Índice**:
+   ```c
+   i++;
+   ```
+   - A cada iteração, o índice `i` é incrementado para avançar para o próximo caractere da string.
+
+9. **Retorno da String**:
+   ```c
+   return str;
+   ```
+   - A função retorna a string modificada, onde todas as palavras foram capitalizadas corretamente.
+
+### Resumo do Papel da Variável `inicial`
+
+A variável `inicial` é crucial para determinar se estamos no início de uma nova palavra. O valor de `inicial` muda com base nos caracteres que encontramos:
+- Se encontramos uma letra e `inicial` é `1`, capitalizamos.
+- Se encontramos uma letra e `inicial` é `0`, garantimos que a letra seja minúscula.
+- Quando encontramos um caractere que não é letra nem número, `inicial` é redefinido para `1`, preparando-se para a próxima palavra.
+
+Essa lógica permite que a função capitalize corretamente cada palavra da string, mantendo as regras de formatação desejadas.

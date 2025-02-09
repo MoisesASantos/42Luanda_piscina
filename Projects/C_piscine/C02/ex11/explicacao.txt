@@ -1,0 +1,246 @@
+No código apresentado, **não há recursão explícita** para imprimir em hexadecimal. A conversão para hexadecimal é feita de forma iterativa, utilizando cálculos simples com divisão e módulo. Vou explicar como isso funciona:
+
+---
+
+### **Etapas da Conversão para Hexadecimal**
+
+A ideia central é dividir o valor numérico do caractere não imprimível em duas partes:
+1. **Parte alta (dígito mais significativo em hexadecimal).**
+2. **Parte baixa (dígito menos significativo em hexadecimal).**
+
+Isso é feito com:
+- **Divisão inteira por 16** para obter o valor do dígito mais significativo.
+- **Resto da divisão por 16** para obter o valor do dígito menos significativo.
+
+Esses valores são então usados como índices em uma tabela (string `hex`) que contém os caracteres `0` a `f` para representar números em hexadecimal.
+
+---
+
+### **Passo a Passo no Código**
+
+#### 1. Entrada do Caractere
+Por exemplo, vamos supor que queremos converter o caractere **`\n` (ASCII 10)** para hexadecimal.
+
+- O valor numérico de **`\n`** no código ASCII é **10**.
+
+#### 2. Cálculo da Parte Alta e Baixa
+Usando as expressões no código:
+```c
+hex[(unsigned char)str[i] / 16]; // Parte alta
+hex[(unsigned char)str[i] % 16]; // Parte baixa
+```
+Para **10**:
+- Parte alta: `10 / 16 = 0` (divisão inteira).
+- Parte baixa: `10 % 16 = 10` (resto da divisão).
+
+Esses valores são índices na string `hex`, que contém `"0123456789abcdef"`.
+
+- Para a parte alta (`0`): `hex[0]` = `'0'`.
+- Para a parte baixa (`10`): `hex[10]` = `'a'`.
+
+Resultado: O caractere **`\n`** é representado em hexadecimal como **`0a`**.
+
+#### 3. Impressão
+A função então imprime:
+1. O caractere de escape `\`.
+2. O caractere correspondente à parte alta (`0`).
+3. O caractere correspondente à parte baixa (`a`).
+
+---
+
+### **Exemplo Geral**
+Para outro caractere, como **`127`** (o maior valor ASCII não imprimível):
+- Parte alta: `127 / 16 = 7`.
+- Parte baixa: `127 % 16 = 15`.
+
+Usando a string `hex`:
+- Parte alta: `hex[7]` = `'7'`.
+- Parte baixa: `hex[15]` = `'f'`.
+
+Resultado: O valor **`127`** é representado como **`7f`**.
+
+---
+
+### **Por Que Isso Não É Recursão?**
+Recursão ocorre quando uma função chama a si mesma. Aqui, o cálculo da parte alta e baixa é feito diretamente por operações matemáticas e acessos à string `hex`. 
+
+Se quiséssemos implementar isso com recursão (não recomendado para essa tarefa específica), seria algo assim:
+```c
+void	ft_print_hex(unsigned char c)
+{
+	char	*hex = "0123456789abcdef";
+
+	if (c >= 16)
+		ft_print_hex(c / 16); // Chamada recursiva para a parte alta
+	write(1, &hex[c % 16], 1); // Imprime a parte baixa
+}
+```
+
+Para `c = 127`, a recursão seria:
+1. `127 / 16 = 7` → chamada recursiva com `7`.
+2. `7 / 16 = 0` → fim da recursão.
+3. Ao retornar, imprime `7` (parte alta) e `f` (parte baixa).
+
+---
+
+Se precisar de mais detalhes ou exemplos, posso explicar! 😊
+
+
+Ótima pergunta! Vamos entender como funciona a operação de **resto da divisão** (ou "módulo") de 127 por 16.
+
+---
+
+### **Como funciona o resto da divisão?**
+
+O operador de módulo (`%`) retorna o **resto da divisão inteira** entre dois números. Em outras palavras, ele responde à pergunta: **"Qual é o valor que sobra quando dividimos um número por outro?"**
+
+#### Fórmula Geral:
+Se temos um número `a` e dividimos por `b`, o resultado da divisão inteira é chamado de `q` (quociente), e o resto é chamado de `r`. 
+
+A relação é dada por:
+\[
+a = b \cdot q + r
+\]
+Onde:
+- \( a \) é o número que estamos dividindo (no caso, 127),
+- \( b \) é o divisor (no caso, 16),
+- \( q \) é o quociente (a parte inteira da divisão),
+- \( r \) é o resto, que sempre satisfaz \( 0 \leq r < b \).
+
+---
+
+### **Divisão de 127 por 16**
+
+1. Dividimos \( 127 \) por \( 16 \):
+   \[
+   127 \div 16 = 7 \quad \text{(quociente inteiro, descartando o valor decimal)}.
+   \]
+
+2. Multiplicamos o quociente \( 7 \) pelo divisor \( 16 \) para encontrar quanto foi "consumido" na divisão:
+   \[
+   7 \times 16 = 112.
+   \]
+
+3. Subtraímos \( 112 \) de \( 127 \) para encontrar o resto:
+   \[
+   127 - 112 = 15.
+   \]
+
+Portanto, o resto da divisão de 127 por 16 é **15**.
+
+---
+
+### **Por que isso é importante no contexto hexadecimal?**
+
+O sistema hexadecimal usa uma base 16, com dígitos que vão de **0** a **15**:
+- `0, 1, 2, ..., 9, a, b, c, d, e, f` (onde `a = 10`, `b = 11`, ..., `f = 15`).
+
+Quando usamos `% 16` no cálculo, o resultado será sempre um valor no intervalo **[0, 15]**, que pode ser diretamente mapeado para os dígitos hexadecimais.
+
+---
+
+### **Exemplo detalhado**
+
+Para **127 % 16**:
+1. Divisão inteira: \( 127 \div 16 = 7 \) (quociente inteiro).
+2. Multiplicação do quociente pelo divisor: \( 7 \times 16 = 112 \).
+3. Subtração: \( 127 - 112 = 15 \).
+
+Resultado: O resto é **15**, que em hexadecimal corresponde ao dígito `'f'`.
+
+---
+
+Se ainda tiver dúvidas ou quiser mais exemplos, é só avisar! 😊
+
+
+Vamos explicar detalhadamente como esse trecho do código funciona e por que ele resolve o problema de exibir um valor em hexadecimal. 
+
+O objetivo é **converter um caractere não imprimível de uma string em sua representação hexadecimal**. Para fazer isso, usamos a tabela de valores ASCII, onde cada caractere tem um valor numérico associado.
+
+### Trecho do código
+```c
+ft_putchar(hex[(unsigned char)str[i] / 16]); // Parte alta do número em hexadecimal
+ft_putchar(hex[(unsigned char)str[i] % 16]); // Parte baixa do número em hexadecimal
+```
+
+---
+
+### **Passo 1: Entendendo o array `hex`**
+
+O array `hex` contém os dígitos hexadecimais:
+```c
+char hex[] = "0123456789abcdef";
+```
+
+- Cada caractere no array corresponde a um valor hexadecimal:
+  - `hex[0]` é `'0'`, `hex[1]` é `'1'`, ..., `hex[15]` é `'f'`.
+- Usamos o índice do array (`/ 16` ou `% 16`) para determinar qual caractere hexadecimal corresponde à parte "alta" ou "baixa" do valor em ASCII.
+
+---
+
+### **Passo 2: Convertendo um caractere em hexadecimal**
+
+Os caracteres são representados em memória por seus valores **ASCII**. Por exemplo:
+- `'A'` é 65 em ASCII.
+- `'B'` é 66.
+- Um caractere "não imprimível" também possui um valor numérico, como o caractere de nova linha (`\n`), que é 10 em ASCII.
+
+Agora, queremos pegar o valor numérico (por exemplo, 65) e convertê-lo para hexadecimal. O número **65 em hexadecimal** é **41**:
+- O **4** é a "parte alta".
+- O **1** é a "parte baixa".
+
+---
+
+### **Passo 3: Divisão e resto para encontrar as partes alta e baixa**
+
+#### Divisão por 16 (`/ 16`)
+- Quando dividimos um número por 16, o resultado inteiro representa o **primeiro dígito hexadecimal** (a parte alta).
+- Exemplo: 
+  - \( 65 \div 16 = 4 \) (parte alta).
+  - Portanto, `hex[4]` corresponde ao caractere `'4'`.
+
+#### Resto da divisão por 16 (`% 16`)
+- O resto da divisão por 16 representa o **segundo dígito hexadecimal** (a parte baixa).
+- Exemplo:
+  - \( 65 \% 16 = 1 \) (parte baixa).
+  - Portanto, `hex[1]` corresponde ao caractere `'1'`.
+
+---
+
+### **Passo 4: Colocando tudo junto**
+
+1. Pegamos o caractere `str[i]` e garantimos que ele seja tratado como um número **não negativo** usando o cast `(unsigned char)`.
+2. Calculamos o valor do índice para a **parte alta** (`/ 16`).
+   - Exemplo: Para `str[i] = 65`, o índice será `65 / 16 = 4`. Isso corresponde ao caractere `'4'`.
+3. Calculamos o valor do índice para a **parte baixa** (`% 16`).
+   - Exemplo: Para `str[i] = 65`, o índice será `65 % 16 = 1`. Isso corresponde ao caractere `'1'`.
+4. Usamos `ft_putchar` para imprimir os dois caracteres, formando a representação hexadecimal:
+   - Primeiro `ft_putchar(hex[4])` imprime `'4'`.
+   - Depois `ft_putchar(hex[1])` imprime `'1'`.
+
+Resultado final: O caractere 65 (`'A'`) é exibido como `'41'` em hexadecimal.
+
+---
+
+### **Por que multiplicação não ocorre aqui?**
+
+No trecho fornecido, **não há multiplicação envolvida**. Apenas estamos:
+- **Dividindo** o valor do caractere por 16 para determinar a "parte alta".
+- **Calculando o resto** da divisão por 16 para determinar a "parte baixa".
+
+O array `hex[]` é usado como um mapeamento direto:
+- O valor calculado (`/ 16` ou `% 16`) é usado como **índice** para selecionar o caractere hexadecimal correspondente.
+
+---
+
+### **Exemplo Prático**
+
+Se `str[i] = 127` (o caractere com valor ASCII 127):
+1. Parte alta: \( 127 \div 16 = 7 \) → `hex[7] = '7'`.
+2. Parte baixa: \( 127 \% 16 = 15 \) → `hex[15] = 'f'`.
+
+Saída: O caractere 127 será exibido como `'7f'`.
+
+---
+
+Se precisar de mais exemplos ou explicações, posso ajudar! 😊
