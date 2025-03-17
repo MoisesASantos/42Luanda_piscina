@@ -2,12 +2,37 @@
 
 int main(void)
 {
+	int i;
+	int n;
+	int div = 0;
+
+	do{
+		printf("Digite um number maior que 1: ");
+        	scanf("%d", &n);
+	}while(n < 2);
+	for(i = 2; i <= n / 2; i++)
+	{
+		if(n % i == 0)
+		{	
+			div++;
+			break;
+		}
+	}
+	if(div != 0)
+		printf("Não é primo\n");
+	else
+		printf("É primo\n");
+	return (0);
+}
+
+/*int main(void)
+{
 	int i = 3;
 	int n;
 
 	printf("Digite um number maior que 1: ");
 	scanf("%d", &n);
-	while(n <= 1)
+	while(n < 2)
 	{
 		printf("Digite um number maior que 1: ");
         	scanf("%d", &n);
@@ -32,5 +57,5 @@ int main(void)
 		i+=2;
 	}
         printf("O número é primo\n");
-i	return (0);
-}
+	return (0);
+}*/
