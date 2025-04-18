@@ -24,7 +24,7 @@
     printf("\n");
 }*/
 
-void binary(int n)
+/*void binary(int n)
 {
 	int vetor[8];
 
@@ -36,8 +36,18 @@ void binary(int n)
 	for(int i = 0; i < 8; i++)
 		printf("%d", vetor[i]);
 	printf("\n");
-}
+}*/
 
+void binary(int n)
+{
+	if(n == 0)
+		printf("%d", n);
+	else
+	{
+		binary(n/2);
+		printf("%d", n % 2);
+	}
+}
 
 int main(void)
 {
