@@ -1,26 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct no {
+typedef struct no{
     int valor;
     struct no *proximo;
-} No;
+}No;
 
-typedef struct {
+typedef struct{
     No *inicio;
     No *fim;
     int tam;
-} Lista;
+}Lista;
 
-void criarLista(Lista *lista) {
+void criar_lista(Lista *lista){
     lista->inicio = NULL;
     lista->fim = NULL;
     lista->tam = 0;
 }
 
-void inserir_inicio(No **lista, int num)
-{
+// procedimento para inserir no início
+void inserir_no_inicio(Lista *lista, int num){
     No *novo = malloc(sizeof(No));
+
     if(novo){
         novo->valor = num;
         novo->proximo = lista->inicio;
@@ -31,80 +32,54 @@ void inserir_inicio(No **lista, int num)
         lista->tam++;
     }
     else
-        printf("\tErro ao alocar memoria!\n");
+        printf("Erro ao alocar memoria!\n");
 }
 
-void inserir_final(No **list, int num)
-{
+// procedimento para inserir no fim
+void inserir_no_fim(Lista *lista, int num){
     No *aux, *novo = malloc(sizeof(No));
-    if(novo)
-    {
+
+    if(novo){
         novo->valor = num;
-        if(*lista == NULL)
-        {
-            *lista = novo;
+
+        // é o primeiro?
+        if(lista->inicio == NULL){
+            lista->inicio = novo;
             lista->fim = novo;
             lista->fim->proximo = lista->inicio;
         }
-        else
-        {
+        else{
             lista->fim->proximo = novo;
             lista->fim = novo;
-            lista->fim->proximo = lista->inicio;
+            // as duas linhas a seguir são sinônimas. Escolha a que achar mais fácil compreender
+            //lista->fim->proximo = lista->inicio;
+            novo->proximo = lista->inicio;
         }
         lista->tam++;
     }
     else
-        printf("\tErro ao alocar memoria!\n");
+        printf("Erro ao alocar memoria!\n");
 }
 
-void inserir_meio(No **lista, int valor, int pos)
-{
+// procedimento para inserir ordenado
+void inserir_ordenado(Lista *lista, int num){
     No *aux, *novo = malloc(sizeof(No));
-    if(novo)
-    {
-        novo->valor = valor;
-        if(*lista == NULL)
-        {
-            novo->proximo = NULL;
-            novo->anterior = NULL;
-            *lista = novo;
-        }
-        else{
-            aux = *lista;
-            while(aux->valor != pos && aux->proximo)
-                aux = aux->proximo;
-            novo->proximo = aux->proximo;
-            if(aux->proximo)
-                aux->proximo->anterior = novo;
-            novo->anterior = aux;
-            aux->proximo = novo;
-        }
-    }
-    else
-        printf("\tErro ao alocar memoria!\n");
-}
 
-
-void inserir_ordenado(No **lista, int num){
-    No *aux, *novo = malloc(sizeof(No));
     if(novo){
         novo->valor = num;
-        // a lista está vazia?
-        if(*lista == NULL){
-            inserir_inicio(lista, num);
-        } // é o menor?
-        else if(novo->valor < (*lista)->valor){
-            inserir_inicio(lista, num);
+        if(lista->inicio == NULL){
+            inserir_no_inicio(lista, num);
+        }
+        else if(novo->valor < lista->inicio->valor){
+            inserir_no_inicio(lista, num);
         }
         else{
             aux = lista->inicio;
             while(aux->proximo != lista->inicio && novo->valor > aux->proximo->valor)
                 aux = aux->proximo;
             if(aux->proximo == lista->inicio)
-                inserir_final(lista, num);
-            else
-            {
+                inserir_no_fim(lista, num);
+            else{
                 novo->proximo = aux->proximo;
                 aux->proximo = novo;
                 lista->tam++;
@@ -115,8 +90,10 @@ void inserir_ordenado(No **lista, int num){
         printf("Erro ao alocar memoria!\n");
 }
 
+// função para remover um nó
 No* remover(Lista *lista, int num){
     No *aux, *remover = NULL;
+
     if(lista->inicio){
         if(lista->inicio == lista->fim && lista->inicio->valor == num){
             remover = lista->inicio;
@@ -148,53 +125,51 @@ No* remover(Lista *lista, int num){
             }
         }
     }
+
     return remover;
 }
 
-No* buscar(Lista *lista, int num)
-{
-    No *aux, *no = NULL;
-    aux = lista->inicio;
-    while(aux && aux->valor != num)
-        aux = aux->proximo;
-    if(aux)
-        no = aux;
-    return no;
+// função para buscar um valor
+No* buscar(Lista *lista, int num){
+    No *aux = lista->inicio;
+
+    if(aux){
+        do{
+            if(aux->valor == num)
+                return aux;
+            aux = aux->proximo;
+        }while(aux != lista->inicio);
+    }
+    return NULL;
 }
 
-
-No* ultimo(No **lista){
-    No *aux = *lista;
-    while(aux->proximo)
-        aux = aux->proximo;
-    return aux;
-}
-
-void imprimirContrario(No *no){
-    printf("\n\tLista: ");
-    while(no){
-        printf("%d ", no->valor);
-        no = no->anterior;
+// procedimento para imprimir a lista circular
+void imprimir(Lista lista){
+    No *no = lista.inicio;
+    printf("\n\tLista tam %d: ", lista.tam);
+    if(no){
+        do{
+            printf("%d ", no->valor);
+            no = no->proximo;
+        }while(no != lista.inicio);
+        printf("\nInicio: %d\n", no->valor);
     }
     printf("\n\n");
 }
 
-
-void imprimirLista(Lista *lista) {
-    No *atual = lista->inicio;
-    while (atual != NULL) {
-        printf("%d ", atual->valor);
-        atual = atual->proximo;
-    }
-    printf("\n");
-}
-
 int main(){
+
     int opcao, valor, anterior;
-    No *removido, *lista = NULL;
+    //No *lista = NULL;
+    Lista lista;
+    No *removido;
+
+    criar_lista(&lista);
+
     do{
-        printf("\n\t0 - Sair\n\t1 - InserirI\n\t2 - inserirF\n\t3 - InserirM\n\t4 - InserirO\n\t5 - Remover\n\t6 - Imprimir\n\t7 - Buscar\n\t8 - ImprimirC\n");
+        printf("\n\t0 - Sair\n\t1 - InserirI\n\t2 - inserirF\n\t3 - InserirO\n\t4 - Remover\n\t5 - Imprimir\n\t6 - Buscar\n");
         scanf("%d", &opcao);
+
         switch(opcao){
         case 1:
             printf("Digite um valor: ");
@@ -207,45 +182,39 @@ int main(){
             inserir_no_fim(&lista, valor);
             break;
         case 3:
-            printf("Digite um valor e o valor de referencia: ");
-            scanf("%d%d", &valor, &anterior);
-            inserir_no_meio(&lista, valor, anterior);
-            break;
-        case 4:
             printf("Digite um valor: ");
             scanf("%d", &valor);
             inserir_ordenado(&lista, valor);
             break;
-        case 5:
+        case 4:
             printf("Digite um valor a ser removido: ");
             scanf("%d", &valor);
             removido = remover(&lista, valor);
             if(removido){
-                printf("Elemento a ser removido: %d\n", removido->valor);
+                printf("Elemento removido: %d\n", removido->valor);
                 free(removido);
             }
             else
-                printf("Elemento inexistente!\n");
+                printf("elemento inesistente!\n");
             break;
-        case 6:
+        case 5:
             imprimir(lista);
             break;
-        case 7:
+        case 6:
             printf("Digite um valor a ser buscado: ");
             scanf("%d", &valor);
             removido = buscar(&lista, valor);
             if(removido)
-                printf("Elemento encontrado: %d\n", removido->valor);
+                printf("Valor encontrado: %d\n", removido->valor);
             else
-                printf("Elemento nao encontrado!\n");
-            break;
-        case 8:
-            imprimirContrario(ultimo(&lista));
+                printf("Valor nao encontrado!\n");
             break;
         default:
             if(opcao != 0)
                 printf("Opcao invalida!\n");
         }
+
     }while(opcao != 0);
+
     return 0;
 }
