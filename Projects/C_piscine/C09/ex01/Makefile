@@ -1,41 +1,42 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: mosantos <marvin@42.fr>                    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/06 10:48:37 by mosantos          #+#    #+#              #
-#    Updated: 2024/11/06 10:48:54 by mosantos         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+# Variables
+NAME		= libft.a
+CC			= cc
+CFLAGS		= -Wall -Wextra -Werror
+AR			= ar rcs
+RM			= rm -f
 
-CC = cc
-CFLAGS = -Wall -Wextra -Werror
-SRC_DIR = srcs
-INC_DIR = includes
-SRC_FILES = ft_putchar.c ft_swap.c ft_putstr.c ft_strlen.c ft_strcmp.c
-OBJ_FILES = $(SRC_FILES:.c=.o)
-LIB_NAME = libft.a
+# Directories
+SRCS_DIR	= srcs
+INCLUDES_DIR= includes
 
-all: $(LIB_NAME)
+# Source files (assuming .c extension)
+SRCS		= $(addprefix $(SRCS_DIR)/, \
+			  ft_putchar.c \
+			  ft_putstr.c \
+			  ft_strcmp.c \
+			  ft_strlen.c \
+			  ft_swap.c)
 
-$(LIB_NAME): $(OBJ_FILES)
-	@echo "Criando a biblioteca $@..."
-	@ar rcs $@ $^
-	@echo "Biblioteca $@ criada com sucesso."
+# Object files
+OBJS		= $(SRCS:.c=.o)
 
-%.o: $(SRC_DIR)/%.c
-	@echo "Compilando $<..."
-	@$(CC) $(CFLAGS) -c $< -o $@
+# Header files
+INCLUDES	= -I$(INCLUDES_DIR)
+
+# Rules
+all: $(NAME)
+
+$(NAME): $(OBJS)
+	$(AR) $@ $^
+
+%.o: %.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	@echo "Removendo arquivos objeto..."
-	@rm -f $(OBJ_FILES)
+	$(RM) $(OBJS)
 
 fclean: clean
-	@echo "Removendo a biblioteca $@..."
-	@rm -f $(LIB_NAME)
+	$(RM) $(NAME)
 
 re: fclean all
 
